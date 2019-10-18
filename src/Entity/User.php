@@ -13,7 +13,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ApiResource
+ * @ApiResource(
+ *  normalizationContext={"groups"={"users_read"}})
  * @UniqueEntity("email", message="Un utilisateur ayant cette adresse email existe déjà.")
  */
 class User implements UserInterface
@@ -22,13 +23,13 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
      * @Assert\NotBlank(message="L'email est un champs obligatoire.")
      * @Assert\Email(message="Le format de l'adresse doit être valide.")
      */
@@ -48,7 +49,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
      * @Assert\NotBlank(message="Le prénom est un champs obligatoire.")
      * @Assert\Length(min=3, minMessage="le prénom doit faire entre 3 et 255 caratères.",
      *                max=255, maxMessage="le prénom doit faire entre 3 et 255 caratères.")
@@ -57,7 +58,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read", "invoices_subresource"})
+     * @Groups({"customers_read", "invoices_read", "invoices_subresource", "users_read"})
      * @Assert\NotBlank(message="Le nom est un champs obligatoire.")
      * @Assert\Length(min=3, minMessage="le nom doit faire entre 3 et 255 caratères.",
      *                max=255, maxMessage="le nom doit faire entre 3 et 255 caratères.")
