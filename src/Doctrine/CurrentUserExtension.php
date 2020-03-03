@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Doctrine;
 
@@ -9,9 +9,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use App\Entity\Customer;
 use App\Entity\Invoice;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface{
+class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+{
 
     private $security;
     private $auth;
@@ -22,21 +24,22 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
         $this->auth = $checker;
     }
 
-    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass){
+    private function addWhere(QueryBuilder $queryBuilder, string $resourceClass)
+    {
 
         $user = $this->security->getUser();
 
-        if(($resourceClass === Invoice::class || $resourceClass === Customer::class) && !$this->auth->isGranted('ROLE_ADMIN')){
+        if (($resourceClass === Invoice::class || $resourceClass === Customer::class) && !$this->auth->isGranted('ROLE_ADMIN') && $user instanceof User) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
 
-            if($resourceClass === Customer::class){
+            if ($resourceClass === Customer::class) {
                 $queryBuilder->andWhere("$rootAlias.user = :user");
-            }else if($resourceClass === Invoice::class){
+            } else if ($resourceClass === Invoice::class) {
                 $queryBuilder->join("$rootAlias.customer", "c")
-                             ->andWhere("c.user = :user");
+                    ->andWhere("c.user = :user");
             }
 
-            $queryBuilder->setParameter("user" , $user);
+            $queryBuilder->setParameter("user", $user);
         }
     }
 
@@ -49,5 +52,4 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
     {
         $this->addWhere($queryBuilder, $resourceClass);
     }
-
 }
