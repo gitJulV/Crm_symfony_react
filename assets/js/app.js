@@ -10,6 +10,9 @@ import { HashRouter, Switch, Route, withRouter } from 'react-router-dom';
 import authAPI from './services/authAPI';
 import AuthContext from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import CustomerPage from './pages/CustomerPage';
+import InvoicePage from './pages/InvoicePage';
+import RegisterPage from './pages/RegisterPage';
 // any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.css');
 
@@ -35,7 +38,10 @@ const App = () => {
                 <div className="container pt-5">
                     <Switch>
                         <Route path="/Login" component={LoginPage} />
+                        <Route path="/Register" component={RegisterPage} />
+                        <PrivateRoute path="/Invoices/:id" component={InvoicePage} />
                         <PrivateRoute path="/Invoices" component={InvoicesPage} />
+                        <PrivateRoute path="/Customers/:id" component={CustomerPage} />
                         <PrivateRoute path="/Customers" component={CustomersPage} />
                         <Route path="/" component={HomePage} />
                     </Switch>
